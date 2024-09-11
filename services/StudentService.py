@@ -5,12 +5,6 @@ class StudentService:
     def __init__(self, repository: StudentRepository) -> None:
         self.__repository = repository
 
-    def addStudent(self, student: Student) -> None:
-        self.__repository.createStudent(student)
-    
-    def addStudents(self, students: list[Student]) -> None:
-        self.__repository.createStudents(students)
-
     def updateStudent(self, student: Student) -> None:
         self.__repository.updateStudent(student)
     
@@ -19,3 +13,14 @@ class StudentService:
     
     def getAllStudents(self) -> list[Student]:
         return self.__repository.readAllStudents()
+    
+    def addStudent(self, student: Student) -> None:
+        checkStudent = self.__repository.readStudentByName(student.fullName)
+        if checkStudent == None: self.__repository.createStudent(student)
+    
+    def addStudents(self, students: list[Student]) -> None:
+        isNotCreatedStudent = []
+        for student in students:
+            checkStudent = self.__repository.readStudentByName(student.fullName)
+            if checkStudent == None: isNotCreatedStudent.append(student)
+        self.__repository.createStudents(isNotCreatedStudent)

@@ -14,31 +14,39 @@ class SpecialtyRepository:
              specialty.formOfStudy, specialty.url, specialty.university.id)
         )
         self.connect.commit()
-
-    def getSpecialtyById(self, specialty__id: int) -> tuple[Specialty]:
+    
+    def readSpecialtyById(self, specialtyId: int) -> tuple[Specialty]:
         self.cursor.execute(
             "SELECT id, name, faculty, educationalProgram, degree, formOfStudy, url, universityId FROM Specialties WHERE id = ?", 
-            (specialty__id,)
+            (specialtyId,)
+        )
+        row = self.cursor.fetchone()
+        return row
+    
+    def readSpecialtyByName(self, specialty_name: str) -> tuple[Specialty]:
+        self.cursor.execute(
+            "SELECT id, name, faculty, educationalProgram, degree, formOfStudy, url, universityId FROM Specialties WHERE name = ?", 
+            (specialty_name,)
         )
         row = self.cursor.fetchone()
         return row
 
-    def getAllSpecialties(self) -> list[tuple[Specialty]]:
+    def readAllSpecialties(self) -> list[tuple[Specialty]]:
         self.cursor.execute("SELECT id, name, faculty, educationalProgram, degree, formOfStudy, url, universityId FROM Specialties")
         rows = self.cursor.fetchall()
         return rows
 
-    def updateSpecialty(self, specialty__id: int, updated__specialty: Specialty) -> bool:
+    def updateSpecialty(self, specialtyId: int, updatedSpecialty: Specialty) -> bool:
         self.cursor.execute(
             "UPDATE Specialties SET name = ?, faculty = ?, educationalProgram = ?, degree = ?, formOfStudy = ?, url = ?, universityId = ? WHERE id = ?",
-            (updated__specialty.name, updated__specialty.faculty, updated__specialty.educationalProgram, 
-             updated__specialty.degree, updated__specialty.formOfStudy, updated__specialty.url, updated__specialty.university.id, specialty__id)
+            (updatedSpecialty.name, updatedSpecialty.faculty, updatedSpecialty.educationalProgram, 
+             updatedSpecialty.degree, updatedSpecialty.formOfStudy, updatedSpecialty.url, updatedSpecialty.university.id, specialtyId)
         )
         self.connect.commit()
         return self.cursor.rowcount > 0
 
-    def deleteSpecialty(self, specialty__id: int) -> bool:
-        self.cursor.execute("DELETE FROM Specialties WHERE id = ?", (specialty__id,))
+    def deleteSpecialty(self, specialtyId: int) -> bool:
+        self.cursor.execute("DELETE FROM Specialties WHERE id = ?", (specialtyId,))
         self.connect.commit()
         return self.cursor.rowcount > 0
 

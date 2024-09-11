@@ -13,14 +13,21 @@ class UniversityRepository:
         )
         self.connect.commit()
 
-    def getUniversityById(self, university__id: int) -> University:
+    def readUniversityById(self, university__id: int) -> University:
         self.cursor.execute("SELECT id, title, url FROM Universities WHERE id = ?", (university__id,))
         row = self.cursor.fetchone()
         if row:
             return University(row[0], row[1], row[2])
         return None
+    
+    def readUniversityByName(self, university_name: str) -> University:
+        self.cursor.execute("SELECT id, title, url FROM Universities WHERE title = ?", (university_name,))
+        row = self.cursor.fetchone()
+        if row:
+            return University(row[0], row[1], row[2])
+        return None
 
-    def getAllUniversities(self) -> list[University]:
+    def readAllUniversities(self) -> list[University]:
         self.cursor.execute("SELECT id, title, url FROM Universities")
         rows = self.cursor.fetchall()
         return [University(row[0], row[1], row[2]) for row in rows]

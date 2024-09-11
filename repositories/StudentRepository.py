@@ -22,6 +22,14 @@ class StudentRepository:
             return Student(row[0], row[1])
         return None
     
+    def readStudentByName(self, student_name: str) -> Student:
+        self.cursor.execute("SELECT id, name FROM Students WHERE name = ?", (student_name,))
+        row = self.cursor.fetchone()
+        if row:
+            return Student(row[0], row[1])
+        return None
+
+    
     def readAllStudents(self) -> list[Student]:
         self.cursor.execute("SELECT id, name FROM Students")
         rows = self.cursor.fetchall()

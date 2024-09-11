@@ -15,34 +15,30 @@ class ApplicationRepository:
         )
         self.connect.commit()
 
-    def getApplicationById(self, application__id: int) -> Application:
+    def readApplicationById(self, applicationId: int) -> Application:
         self.cursor.execute(
             "SELECT id, studentId, specialtyId, rate, score, status, priority FROM Applications WHERE id = ?", 
-            (application__id,)
+            (applicationId,)
         )
         row = self.cursor.fetchone()
-        if row:
-            student__id = row[1]
-            specialty__id = row[2]
-            return Application(row[0], student__id, specialty__id, row[3], row[4], row[5], row[6])
-        return None
+        return row
 
-    def getAllApplications(self) -> list[Application]:
+    def readAllApplications(self) -> list[Application]:
         self.cursor.execute("SELECT id, studentId, specialtyId, rate, score, status, priority FROM Applications")
         rows = self.cursor.fetchall()
-        return [Application(row[0], row[1], row[2], row[3], row[4], row[5], row[6]) for row in rows]
-
-    def updateApplication(self, application__id: int, updated__application: Application) -> bool:
+        return rows
+    
+    def updateApplication(self, applicationId: int, updatedApplication: Application) -> bool:
         self.cursor.execute(
             "UPDATE Applications SET studentId = ?, specialtyId = ?, rate = ?, score = ?, status = ?, priority = ? WHERE id = ?",
-            (updated__application.student.id, updated__application.specialty.id, updated__application.rate, 
-             updated__application.score, updated__application.status, updated__application.priority, application__id)
+            (updatedApplication.student.id, updatedApplication.specialty.id, updatedApplication.rate, 
+             updatedApplication.score, updatedApplication.status, updatedApplication.priority, applicationId)
         )
         self.connect.commit()
         return self.cursor.rowcount > 0
 
-    def deleteApplication(self, application__id: int) -> bool:
-        self.cursor.execute("DELETE FROM Applications WHERE id = ?", (application__id,))
+    def deleteApplication(self, applicationId: int) -> bool:
+        self.cursor.execute("DELETE FROM Applications WHERE id = ?", (applicationId,))
         self.connect.commit()
         return self.cursor.rowcount > 0
 
